@@ -1,6 +1,9 @@
-/* General styles */
+/* Import custom font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Apply the font globally */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif; /* Poppins for a modern, clean look */
     background-color: #f4f8fb;
     margin: 0;
     padding: 20px;
@@ -29,8 +32,8 @@ h3 {
 
 /* Inputs container */
 .input-container {
-    display: grid;  /* Using grid instead of flex */
-    grid-template-columns: repeat(3, 1fr);  /* Create 3 columns */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -54,29 +57,40 @@ h3 {
     color: #007bff;
 }
 
+/* Labels */
 label {
-    font-size: 14px;
+    font-size: 16px;
     color: #555;
+    font-weight: 500; /* Slightly bolder for readability */
 }
 
+/* General input field styles */
 input[type="number"] {
-    width: 100%;  /* Ensure inputs take full width */
-    padding: 5px;
-    font-size: 14px;
-    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
+    transition: all 0.3s ease; /* Smooth transition for focus effect */
+}
+
+/* Input focus effect */
+input[type="number"]:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+    outline: none; /* Remove the default outline */
 }
 
 /* Handicap input */
 #handicap {
-    width: 60px;
-    padding: 5px;
-    font-size: 14px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 80px; /* Slightly wider */
+}
+
+/* Add a subtle shadow to inputs */
+input[type="number"] {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 /* Results section */
@@ -85,7 +99,7 @@ input[type="number"] {
     padding: 15px;
     background-color: #eaf4fc;
     border: 1px solid #007bff;
-    border-radius: 5px;
+    border-radius: 8px;
     color: #0056b3;
     font-size: 16px;
 }
@@ -98,8 +112,8 @@ input[type="number"] {
 /* Total Points Display */
 #total-points {
     position: fixed;
-    top: 20px;  /* Adjusts distance from the top of the page */
-    right: 20px;  /* Adjusts distance from the right edge of the screen */
+    top: 20px;
+    right: 20px;
     padding: 15px;
     background-color: #007bff;
     color: white;
@@ -110,27 +124,12 @@ input[type="number"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 10;
     width: 200px;
-    max-width: 100%; /* Ensures it doesn't go off screen on smaller devices */
+    max-width: 100%;
 }
 
 #total-points:hover {
     background-color: #0056b3;
     cursor: pointer;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
 }
 
 /* Media Queries for Mobile Responsiveness */
