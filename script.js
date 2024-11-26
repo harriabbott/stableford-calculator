@@ -1,8 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Define the holes for each column
+  const holes1_6 = [1, 4, 7, 10, 13, 16];
+  const holes7_12 = [2, 5, 8, 11, 14, 17];
+  const holes13_18 = [3, 6, 9, 12, 15, 18];
+
   // Generate hole inputs dynamically
-  function createHoleInputs(start, end, containerId) {
+  function createHoleInputs(holeNumbers, containerId) {
     const container = document.getElementById(containerId);
-    for (let i = start; i <= end; i++) {
+    holeNumbers.forEach(i => {
       const div = document.createElement("div");
       div.classList.add("hole");
       div.innerHTML = `
@@ -15,72 +20,100 @@ document.addEventListener("DOMContentLoaded", () => {
         
         <label for="gross-${i}">Gross Score:</label>
         <input type="number" id="gross-${i}" required>
+        
+        <p id="points-${i}" class="hole-points">Stableford Points: 0</p>
+        <p id="error-${i}" class="error-message"></p>
       `;
       container.appendChild(div);
-    }
+    });
   }
 
   // Populate columns with hole inputs
-  createHoleInputs(1, 6, "holes-1-6");
-  createHoleInputs(7, 12, "holes-7-12");
-  createHoleInputs(13, 18, "holes-13-18");
+  createHoleInputs(holes1_6, "holes-1-6");
+  createHoleInputs(holes7_12, "holes-7-12");
+  createHoleInputs(holes13_18, "holes-13-18");
 
-  // Calculate Stableford points
-  document.getElementById("calculate").addEventListener("click", () => {
+  // Function to calculate stableford points after input
+  function calculateStablefordPoints(i) {
     const handicap = parseInt(document.getElementById("handicap").value, 10);
     if (isNaN(handicap)) {
-      alert("Please enter a valid handicap.");
+      return; // Prevent calculations if handicap is not valid
+    }
+
+    const par = parseInt(document.getElementById(`par-${i}`).value, 10);
+    const strokeIndex = parseInt(document.getElementById(`strokeIndex-${i}`).value, 10);
+    const grossScore = parseInt(document.getElementById(`gross-${i}`).value, 10);
+
+    // If gross score is not valid, clear the error and don't calculate
+    if (isNaN(grossScore)) {
+      document.getElementById(`error-${i}`).textContent = "Please enter a valid gross score.";
+      document.getElementById(`points-${i}`).textContent = "Stableford Points: 0";
       return;
     }
 
-    let totalStablefordPoints = 0;
-    let holeResults = "";
+    // Clear any error message when the input is valid
+    document.getElementById(`error-${i}`).textContent = "";
 
-    for (let i = 1; i <= 18; i++) {
-      const par = parseInt(document.getElementById(`par-${i}`).value, 10);
-      const strokeIndex = parseInt(document.getElementById(`strokeIndex-${i}`).value, 10);
-      const grossScore = parseInt(document.getElementById(`gross-${i}`).value, 10);
+    // Calculate strokes received based on handicap and stroke index
+    const strokesReceived =
+      Math.floor(handicap / 18) + (handicap % 18 >= strokeIndex ? 1 : 0);
 
-      if (isNaN(par) || isNaN(strokeIndex) || isNaN(grossScore)) {
-        alert(`Please fill in all fields for Hole ${i}.`);
-        return;
-      }
+    // Calculate net score
+    const netScore = grossScore - strokesReceived;
 
-      // Calculate strokes received based on handicap and stroke index
-      const strokesReceived =
-        Math.floor(handicap / 18) + (handicap % 18 >= strokeIndex ? 1 : 0);
+    // Determine Stableford points
+    let stablefordPoints = 0;
+    const netDifference = par - netScore;
 
-      // Calculate net score
-      const netScore = grossScore - strokesReceived;
-
-      // Determine Stableford points
-      let stablefordPoints = 0;
-      const netDifference = par - netScore;
-
-      if (netDifference >= 3) {
-        stablefordPoints = 5; // Albatross or better
-      } else if (netDifference === 2) {
-        stablefordPoints = 4; // Eagle
-      } else if (netDifference === 1) {
-        stablefordPoints = 3; // Birdie
-      } else if (netDifference === 0) {
-        stablefordPoints = 2; // Par
-      } else if (netDifference === -1) {
-        stablefordPoints = 1; // Bogey
-      } else {
-        stablefordPoints = 0; // Worse than Bogey
-      }
-
-      // Add to total and store hole result
-      totalStablefordPoints += stablefordPoints;
-      holeResults += `<p>Hole ${i}: ${stablefordPoints} points (Net: ${netScore}, Par: ${par})</p>`;
+    if (netDifference >= 3) {
+      stablefordPoints = 5; // Albatross or better
+    } else if (netDifference === 2) {
+      stablefordPoints = 4; // Eagle
+    } else if (netDifference === 1) {
+      stablefordPoints = 3; // Birdie
+    } else if (netDifference === 0) {
+      stablefordPoints = 2; // Par
+    } else if (netDifference === -1) {
+      stablefordPoints = 1; // Bogey
+    } else {
+      stablefordPoints = 0; // Worse than Bogey
     }
 
-    // Display the results
-    document.getElementById("results").innerHTML = `
-      <h3>Individual Hole Results</h3>
-      ${holeResults}
-      <h3>Total Stableford Points: ${totalStablefordPoints}</h3>
-    `;
-  });
+    // Display Stableford points and update total
+    document.getElementById(`points-${i}`).textContent = `Stableford Points: ${stablefordPoints}`;
+
+    // Update total stableford points after each input
+    updateTotalPoints();
+  }
+
+  // Function to update the total points
+  function updateTotalPoints() {
+    let totalStablefordPoints = 0;
+    for (let i = 1; i <= 18; i++) {
+      const pointsText = document.getElementById(`points-${i}`).textContent;
+      const pointsMatch = pointsText.match(/Stableford Points: (\d+)/);
+      if (pointsMatch) {
+        totalStablefordPoints += parseInt(pointsMatch[1], 10);
+      }
+    }
+
+    // Display total points
+    const totalPointsDisplay = document.getElementById("total-points");
+    if (totalPointsDisplay) {
+      totalPointsDisplay.textContent = `Total Stableford Points: ${totalStablefordPoints}`;
+    } else {
+      const totalPointsDiv = document.createElement("div");
+      totalPointsDiv.id = "total-points";
+      totalPointsDiv.textContent = `Total Stableford Points: ${totalStablefordPoints}`;
+      document.body.appendChild(totalPointsDiv);
+    }
+  }
+
+  // Add event listeners to gross score inputs to trigger stableford points calculation
+  for (let i = 1; i <= 18; i++) {
+    const grossInput = document.getElementById(`gross-${i}`);
+    if (grossInput) {
+      grossInput.addEventListener("input", () => calculateStablefordPoints(i));
+    }
+  }
 });

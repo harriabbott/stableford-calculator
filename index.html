@@ -10,13 +10,14 @@
   <div class="container">
     <h1>Stableford Calculator</h1>
     <label for="handicap">Enter Handicap:</label>
-    <input type="number" id="handicap" placeholder="Handicap" min="0" max="54">
+    <input type="number" id="handicap" placeholder="Handicap" min="0" max="54" required>
+    <!-- Display total points here -->
+    <div id="total-points" class="total-points">Total Stableford Points: 0</div>
     <div class="input-container">
       <div class="hole-column" id="holes-1-6"></div>
       <div class="hole-column" id="holes-7-12"></div>
       <div class="hole-column" id="holes-13-18"></div>
     </div>
-    <button id="calculate">Calculate</button>
     <div id="results"></div>
   </div>
   <script src="script.js"></script>
