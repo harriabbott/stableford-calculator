@@ -29,20 +29,19 @@ h3 {
 
 /* Inputs container */
 .input-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;  /* Using grid instead of flex */
+    grid-template-columns: repeat(3, 1fr);  /* Create 3 columns */
     gap: 15px;
     margin-bottom: 20px;
 }
 
 /* Hole column */
 .hole-column {
-    flex: 1;
     background-color: #f9fcff;
     border: 1px solid #cde4f7;
     border-radius: 5px;
     padding: 10px;
+    margin-bottom: 15px;
 }
 
 .hole {
@@ -61,7 +60,7 @@ label {
 }
 
 input[type="number"] {
-    width: calc(100% - 10px);
+    width: 100%;  /* Ensure inputs take full width */
     padding: 5px;
     font-size: 14px;
     margin-bottom: 10px;
@@ -80,22 +79,6 @@ input[type="number"] {
     border-radius: 4px;
 }
 
-/* Calculate button */
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
 /* Results section */
 #results {
     margin-top: 20px;
@@ -112,44 +95,70 @@ button:hover {
     margin: 5px 0;
 }
 
-/* Make the total points sticky */
+/* Total Points Display */
 #total-points {
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
-    top: 10px; /* Adjust as needed to provide spacing from the top */
-    right: 10px;
+    position: fixed;
+    top: 20px;  /* Adjusts distance from the top of the page */
+    right: 20px;  /* Adjusts distance from the right edge of the screen */
+    padding: 15px;
     background-color: #007bff;
-    padding: 10px;
     color: white;
-    border-radius: 5px;
     font-size: 18px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 999; /* Ensure it stays on top */
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    width: 200px;
+    max-width: 100%; /* Ensures it doesn't go off screen on smaller devices */
 }
 
-/* Additional adjustments for better responsiveness on mobile */
+#total-points:hover {
+    background-color: #0056b3;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Media Queries for Mobile Responsiveness */
 @media (max-width: 768px) {
-    #total-points {
-        font-size: 16px;
-        top: 80px; /* Adjust for smaller screens */
-        width: auto;
-        position: sticky;
-        right: auto;
-        left: 10px; /* Make it align with the left side for smaller screens */
-    }
-
-    /* Responsive layout for smaller screens */
     .input-container {
-        flex-direction: column;
-        gap: 20px;
+        grid-template-columns: repeat(3, 1fr);  /* Keep 3 columns layout */
     }
 
-    .hole-column {
-        flex: none;
-        width: 100%;
+    #total-points {
+        top: 10px;  /* Adjusts distance from the top for smaller screens */
+        right: 10px;  /* Adjusts right distance */
+        width: auto;
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;  /* Less padding on small phones */
     }
 
-    .hole {
-        width: 100%;
+    h1 {
+        font-size: 22px;  /* Slightly smaller header */
+    }
+
+    #total-points {
+        font-size: 14px;  /* Smaller font size for mobile */
+        padding: 8px;
     }
 }
